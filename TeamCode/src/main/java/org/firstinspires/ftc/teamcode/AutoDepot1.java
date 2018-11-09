@@ -90,6 +90,7 @@ public class AutoDepot1 extends LinearOpMode {
     // The can/should be tweaked to suite the specific robot drive train.
     static final double     DRIVE_SPEED             = 0.5;     // Nominal speed for better accuracy.
     static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
+    static final double     SLOW_DRIVE_SPEED        = 0.3;
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
@@ -155,7 +156,8 @@ public class AutoDepot1 extends LinearOpMode {
         robot.colorRight.enableLed(true);
 
         if (color_num != -1) {
-            // line square
+            findLine();
+            lineSquare();
         }
 
         robot.sampling.setPosition(0); // retracted
@@ -486,4 +488,54 @@ public class AutoDepot1 extends LinearOpMode {
         return Range.clip(error * PCoeff, -1, 1);
     }
 
+    public void findLine(){
+        while (opModeIsActive() && robot.colorLeft.readUnsignedByte(ModernRoboticsI2cColorSensor.Register.COLOR_NUMBER) != color_num) {
+            robot.frontLeft.setPower(SLOW_DRIVE_SPEED);
+            robot.backLeft.setPower(SLOW_DRIVE_SPEED);
+        }
+        robot.frontLeft.setPower(0);
+        robot.backLeft.setPower(0);
+
+        while (opModeIsActive() && robot.colorRight.readUnsignedByte(ModernRoboticsI2cColorSensor.Register.COLOR_NUMBER) != color_num) {
+            robot.frontRight.setPower(SLOW_DRIVE_SPEED);
+            robot.backRight.setPower(SLOW_DRIVE_SPEED);
+        }
+        robot.frontRight.setPower(0);
+        robot.backRight.setPower(0);
+
+    }
+
+    public void lineSquare(){
+        for (int i = 1; i < 2; i++) {
+            while (opModeIsActive() && robot.colorRight.readUnsignedByte(ModernRoboticsI2cColorSensor.Register.COLOR_NUMBER) == color_num) {
+                robot.frontRight.setPower(SLOW_DRIVE_SPEED);
+                robot.backRight.setPower(SLOW_DRIVE_SPEED);
+            }
+            robot.frontRight.setPower(0);
+            robot.backRight.setPower(0);
+
+            while (opModeIsActive() && robot.colorRight.readUnsignedByte(ModernRoboticsI2cColorSensor.Register.COLOR_NUMBER) != color_num) {
+                robot.frontRight.setPower(-SLOW_DRIVE_SPEED);
+                robot.backRight.setPower(-SLOW_DRIVE_SPEED);
+            }
+            robot.frontRight.setPower(0);
+            robot.backRight.setPower(0);
+
+
+            while (opModeIsActive() && robot.colorLeft.readUnsignedByte(ModernRoboticsI2cColorSensor.Register.COLOR_NUMBER) == color_num) {
+                robot.frontLeft.setPower(SLOW_DRIVE_SPEED);
+                robot.backLeft.setPower(SLOW_DRIVE_SPEED);
+            }
+            robot.frontLeft.setPower(0);
+            robot.backLeft.setPower(0);
+
+            while (opModeIsActive() && robot.colorLeft.readUnsignedByte(ModernRoboticsI2cColorSensor.Register.COLOR_NUMBER) != color_num) {
+                robot.frontLeft.setPower(-SLOW_DRIVE_SPEED);
+                robot.backLeft.setPower(-SLOW_DRIVE_SPEED);
+            }
+            robot.frontLeft.setPower(0);
+            robot.backLeft.setPower(0);
+
+        }
+    }
 }
