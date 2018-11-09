@@ -506,7 +506,7 @@ public class AutoDepot1 extends LinearOpMode {
     }
 
     public void lineSquare(){
-        for (int i = 1; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             while (opModeIsActive() && robot.colorRight.readUnsignedByte(ModernRoboticsI2cColorSensor.Register.COLOR_NUMBER) == color_num) {
                 robot.frontRight.setPower(SLOW_DRIVE_SPEED);
                 robot.backRight.setPower(SLOW_DRIVE_SPEED);
